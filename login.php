@@ -1,5 +1,6 @@
 <?php 
     include 'connection.php';
+    session_start();
      
     if(isset($_POST['submit-btn'])){
         /*$filter_name = filter_var($_POST['name'], FILTER_SANITIZE_STRING);*/
@@ -13,20 +14,27 @@
         $password = mysqli_real_escape_string($conn, $filter_password);
 
         /*$filter_cpassword = filter_var($_POST['cpassword'], FILTER_SANITIZE_STRING);*/
+        /*
         $filter_cpassword = isset($_POST['cpassword']) ? filter_var($_POST['cpassword'], FILTER_SANITIZE_STRING) : '';
         $cpassword = mysqli_real_escape_string($conn, $filter_cpassword);
+        */
 
         $select_user = mysqli_query($conn, "SELECT * FROM `users` WHERE email = '$email'") or die('query failed');
 
         if(mysqli_num_rows($select_user) > 0){
-            $message = 'user already exist';
-        } else {
-            if ($password != $cpassword) {
-                $message = 'wrong password';
-            } else {
-                mysqli_query($conn, "INSERT INTO `users`(`name`, `email`, `password`) VALUES ('$name', '$email', '$password')") or die('query failed');
-                $message[] = 'registered successfully';
-                header('location:login.php');
+            $row = mysqli_fetch_assoc($select_user);
+            if($row['user_type']=='admin'){
+                $_SESSIO['admin_name'] = $row['name'];
+                $_SESSION['admin_email'] = $row['email'];
+                $_SESSION['admin_id'] = $row['id'];
+                header('location:admin_pannel.php');
+            }else if($row['user_type']== 'user'){
+                $_SESSION['user_name'] = $row['name'];
+                $_SESSION['user_email'] = $row['email'];
+                $_SESSION['user_id'] = $row['id'];
+                header('location:index.php');
+            } else{
+                $massage[] = 'incorrect email or password';
             }
         }
     }
