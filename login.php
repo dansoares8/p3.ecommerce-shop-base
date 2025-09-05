@@ -2,7 +2,8 @@
     include 'connection.php';
      
     if(isset($_POST['submit-btn'])){
-        $filter_name = filter_var($_POST['name'], FILTER_SANITIZE_STRING);
+        /*$filter_name = filter_var($_POST['name'], FILTER_SANITIZE_STRING);*/
+        $filter_name = isset($_POST['name']) ? filter_var($_POST['name'], FILTER_SANITIZE_STRING) : '';
         $name = mysqli_real_escape_string($conn, $filter_name);
 
         $filter_email = filter_var($_POST['email'], FILTER_SANITIZE_STRING);
@@ -11,7 +12,8 @@
         $filter_password = filter_var($_POST['password'], FILTER_SANITIZE_STRING);
         $password = mysqli_real_escape_string($conn, $filter_password);
 
-        $filter_cpassword = filter_var($_POST['cpassword'], FILTER_SANITIZE_STRING);
+        /*$filter_cpassword = filter_var($_POST['cpassword'], FILTER_SANITIZE_STRING);*/
+        $filter_cpassword = isset($_POST['cpassword']) ? filter_var($_POST['cpassword'], FILTER_SANITIZE_STRING) : '';
         $cpassword = mysqli_real_escape_string($conn, $filter_cpassword);
 
         $select_user = mysqli_query($conn, "SELECT * FROM `users` WHERE email = '$email'") or die('query failed');
@@ -60,13 +62,21 @@
 
 
         <form method="post">
-            <h1>register now</h1>
-            <input type="text" name="name" placeholder="Name" required>
-            <input type="email" name="email" placeholder="E-mail" required>
-            <input type="password" name="password" placeholder="Password" required>
-            <input type="password" name="cpassword" placeholder="Repeat your Password" required>
-            <input type="submit" name="submit-btn" value="register now" class="btn">
-            <p>already have an account ? <a href="login.php">Login now</a></p>
+            <h1>Login now</h1>
+
+            <div class="input-field">
+                <label>your email</label><br>
+                <input type="email" name="email" placeholder="enter your email" required>
+            </div>
+
+            <div class="input-field">
+                <label>your password</label><br>
+                <input type="password" name="password" placeholder="enter your password" required>
+            </div>
+
+
+            <input type="submit" name="submit-btn" value="login now" class="btn">
+            <p>do not have an account ? <a href="register.php">Register now</a></p>
         </form>
     </section>
 
